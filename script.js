@@ -1,9 +1,9 @@
-let text = document.getElementById('emotion');
 let video = document.getElementById('video');
 let canvas = document.getElementById('canvas');
 let ctx = canvas.getContext('2d');
 let faceModel;
 let tfliteModel;
+let emoji = document.createElement('img');
 
 const emotions = [
     'Angry',
@@ -14,6 +14,16 @@ const emotions = [
     'Surprise',
     'Neutral'
 ];
+
+const emojis = [
+    'assets/emojis/angry.png',
+    'assets/emojis/disgust.png',
+    'assets/emojis/fear.png',
+    'assets/emojis/happy.png',
+    'assets/emojis/sad.png',
+    'assets/emojis/surprise.png',
+    'assets/emojis/neutral.png'
+]
 
 function argMax(array) {
     return array.map((x, i) => [x, i]).reduce((r, a) => (a[0] > r[0] ? a : r))[1];
@@ -40,7 +50,7 @@ const displayEmojis = async () => {
     
     ctx.drawImage(video, 0, 0, 300, 300);
     prediction.forEach((pred) => {
-        ctx.strokeStyle = '#00ff00';
+        ctx.strokeStyle = '#03fc9d';
         ctx.lineWidth = 2;
         ctx.strokeRect(
             pred.topLeft[0],
@@ -69,8 +79,15 @@ const displayEmojis = async () => {
         const outputTensor = tfliteModel.predict(crop);
         const emotion = Array.from((outputTensor.dataSync()));
         const prediction = argMax(emotion);
-        text.innerHTML = emotions[prediction];
-        // console.log(emotions[prediction]);
+        
+        emoji.src = emojis[prediction];
+        const scale = Math.floor((pred.bottomRight[0] - pred.topLeft[0]) / 4);
+        ctx.drawImage(
+            emoji,
+            Math.floor(pred.bottomRight[0] - scale - 3),
+            Math.floor(pred.topLeft[1] - 27),
+            scale, scale
+        );
     });
 };
 
