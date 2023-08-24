@@ -74,14 +74,14 @@ const displayEmojis = async () => {
             .expandDims()
             .resizeNearestNeighbor([48, 48])
             .mean(3)
-            .expandDims(-1);
-        
-        const outputTensor = tfliteModel.predict(crop);
-        const emotion = Array.from((outputTensor.dataSync()));
-        const prediction = argMax(emotion);
-        
-        emoji.src = emojis[prediction];
-        const scale = Math.floor((pred.bottomRight[0] - pred.topLeft[0]) / 4);
+					.expandDims(-1);
+			        
+			const outputTensor = tfliteModel.predict(crop);
+			const emotion = Array.from((outputTensor.dataSync()));
+			const prediction = argMax(emotion);
+			
+			emoji.src = emojis[prediction];
+			const scale = Math.floor((pred.bottomRight[0] - pred.topLeft[0]) / 4);
         ctx.drawImage(
             emoji,
             Math.floor(pred.bottomRight[0] - scale - 3),
@@ -95,7 +95,7 @@ const displayEmojis = async () => {
 setupWebcam();
 
 video.addEventListener('loadeddata', async () => {
-    faceModel = await blazeface.load();
-    tfliteModel = await tflite.loadTFLiteModel('assets/tf_model.tflite');
-    setInterval(displayEmojis, 100);
+	faceModel = await blazeface.load();
+	tfliteModel = await tflite.loadTFLiteModel('assets/tf_model.tflite');
+	setInterval(displayEmojis, 100);
 });
